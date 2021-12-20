@@ -3,7 +3,7 @@
 
 ## <p>https://potluck-planner-3-ft.herokuapp.com/</p>
 
-## TODO: REGISTER / LOGIN
+## REGISTER / LOGIN
 
 ### [POST] /api/auth/register
 
@@ -47,4 +47,35 @@ _Response_
   "user_id": 1
 }
 ```
-  
+## TODO: USERS
+
+### [GET] /api/users _(RESTRICTED)_
+
+- Return array of users
+  - _requires token in header_
+
+_Response_
+```json
+[
+  {
+    "user_id": 1,
+    "username": "user"
+  },
+  {
+    "user_id": 2,
+    "username": "user2"
+  }
+]
+```
+### [GET] /api/users/:user_id _(RESTRICTED)_
+
+- Return user with specified user_id
+  - _requires token in header_
+
+_Response_
+```json
+{
+  "user_id": 1,
+  "username": "user"
+}
+```
