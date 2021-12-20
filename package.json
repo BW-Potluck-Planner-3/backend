@@ -7,6 +7,7 @@
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
+    "resetdb": "npm run rollback; npm run migrate; npm run seed",
     "migrateh": "heroku run knex migrate:latest -a potluck-planner-3-ft",
     "rollbackh": "heroku run knex migrate:rollback -a potluck-planner-3-ft",
     "databaseh": "heroku pg:psql -a potluck-planner-3-ft",
