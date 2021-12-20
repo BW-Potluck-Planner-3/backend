@@ -3,7 +3,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 
 // Routers
-// const authRouter = require('./auth/auth-router');
+const authRouter = require('./auth/auth-router');
 // const userRouter = require('./users/users-router');
 // const potluckRouter = require('./potlucks/potlucks-router');
 // const restricted = require('./middleware/restricted');
@@ -16,7 +16,7 @@ server.use(cors());
 // Routes
 // server.use('/api/potlucks', restricted, potluckRouter);
 // server.use('/api/users', restricted, userRouter);
-// server.use('/api/auth', authRouter);
+server.use('/api/auth', authRouter);
 
 //eslint-disable-next-line
 server.use((err, req, res, next) => {
