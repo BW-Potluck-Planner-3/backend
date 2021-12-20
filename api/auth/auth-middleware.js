@@ -8,8 +8,8 @@ const validateEmptyFields = (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
     next({
-      status: 400,
-      message: 'username and password required',
+      status: 401,
+      message: 'Username and password required',
     });
   } else {
     next();
@@ -19,11 +19,14 @@ const validateEmptyFields = (req, res, next) => {
 // Check for existing username
 const validateUsername = async (req, res, next) => {
   try {
-    const user = await Users.getBy({ username: lowerCase(req.body.username) });
+    const { username } = req.body;
+    const [user] = await Users.getBy({
+      username: lowerCase(username),
+    });
     if (user) {
       next({
         status: 401,
-        message: 'username already exists',
+        message: 'Username already exists',
       });
     } else {
       next();
@@ -58,7 +61,7 @@ const validateLogin = async (req, res, next) => {
     } else {
       next({
         status: 401,
-        message: 'Invalid Credentials',
+        message: 'Invalid credentials',
       });
     }
   } catch (err) {
