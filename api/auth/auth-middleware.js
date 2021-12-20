@@ -52,7 +52,7 @@ const hashPassword = (req, res, next) => {
 // Login validations
 const validateLogin = async (req, res, next) => {
   const { username, password } = req.body;
-  const user = await Users.getBy({ username: lowerCase(username) });
+  const [user] = await Users.getBy({ username: lowerCase(username) });
   try {
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = tokenBuilder(user);
