@@ -1,3 +1,9 @@
+# Backend For Potluck Planner 3
+
+## Heroku Deployment
+
+Server is deployed to https://potluck-planner-3-ft.herokuapp.com/
+
 # Build Week Scaffolding for Node and PostgreSQL
 
 ## Video Tutorial
