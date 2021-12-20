@@ -25,6 +25,7 @@ const sharedConfig = {
   client: 'pg',
   migrations: { directory: './api/data/migrations' },
   seeds: { directory: './api/data/seeds' },
+  useNullAsDefault: true
 }
 
 module.exports = {
