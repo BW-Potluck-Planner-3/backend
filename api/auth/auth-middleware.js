@@ -1,6 +1,7 @@
 const Users = require('../users/users-model');
 const { lowerCase } = require('lower-case');
 const bcrypt = require('bcryptjs');
+const { BCRYPT_ROUNDS } = require('../secrets');
 const tokenBuilder = require('./token-builder');
 
 // Check for empty fields
@@ -39,7 +40,7 @@ const validateUsername = async (req, res, next) => {
 // Hash password
 const hashPassword = (req, res, next) => {
   const { username, password } = req.body;
-  const rounds = process.env.BCRYPT_ROUNDS || 8;
+  const rounds = BCRYPT_ROUNDS;
   const hash = bcrypt.hashSync(password, rounds);
 
   req.body = {
