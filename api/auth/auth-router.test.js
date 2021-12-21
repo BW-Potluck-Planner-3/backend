@@ -14,7 +14,7 @@ afterAll(async () => {
 })
 
 describe("[POST] /api/auth/register", () => {
-  it("responds with success message and status code 201 if inputs are valid", async () => {
+  it('responds with the message "successfully registered {username}" and status code 201 if inputs are valid', async () => {
     const expectedMessage = /successfully registered/i
     const res = await request(server)
       .post('/api/auth/register')
@@ -25,28 +25,26 @@ describe("[POST] /api/auth/register", () => {
     expect(res.status).toBe(201)
     expect(res.body.message).toMatch(expectedMessage)
   })
-  // it('responds with { message: "username and password required" } and status code 400 if the request body does not contain either a username or password key with a value', async () => {
-  //   const res = await request(server)
-  //     .post('/api/auth/register')
-  //     .send({
-  //       username: "",
-  //       password: "1234"
-  //     })
-  //   expect(res.status).toBe(400)
-  //   expect(res.body).toMatchObject({
-  //     message: "username and password required"
-  //   })
-  // })
-  // it('responds with { message: "username taken" } and status code 409 if the username in the request body already exists in the database', async () => {
-  //   const res = await request(server)
-  //     .post("/api/auth/register")
-  //     .send({
-  //       username: "eli_the_lion",
-  //       password: "1234"
-  //     })
-  //   expect(res.status).toBe(409)
-  //   expect(res.body).toMatchObject({
-  //     message: "username taken"
-  //   })
-  // })
+  it('responds with the message "username already exists" and status code 401 if the request body\'s username already exists', async () => {
+    const expectedMessage = /username already exists/i
+    const res = await request(server)
+      .post('/api/auth/register')
+      .send({
+        username: "frodo",
+        password: "1234"
+      })
+    expect(res.status).toBe(401)
+    expect(res.body.message).toMatch(expectedMessage)
+  })
+  it('responds with the message "username and password required" and status code 401 if the request body lacks either a username or password', async () => {
+    const expectedMessage = /username and password required/i
+    const res = await request(server)
+      .post("/api/auth/register")
+      .send({
+        username: "",
+        password: "bad"
+      })
+    expect(res.status).toBe(401)
+    expect(res.body.message).toMatch(expectedMessage)
+  })
 })
