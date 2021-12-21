@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
 });
 
 // [GET] /api/potlucks/:potluck_id
-router.get('/:potluck_id', async (req, res, next) => {
+router.get('/:potluck_id', checkPotluckId, async (req, res, next) => {
   try {
     const guests = await Potlucks.getIdGuests(req.params.potluck_id);
     const foods = await Potlucks.getByIdFoods(req.params.potluck_id);
@@ -31,7 +31,7 @@ router.get('/:potluck_id', async (req, res, next) => {
 });
 
 // [GET] /api/potlucks/:potluck_id/guests
-router.get('/:potluck_id/guests', async (req, res, next) => {
+router.get('/:potluck_id/guests', checkPotluckId, async (req, res, next) => {
   try {
     const guests = await Potlucks.getIdGuests(req.params.potluck_id);
     res.status(200).json(guests);
@@ -41,7 +41,7 @@ router.get('/:potluck_id/guests', async (req, res, next) => {
 });
 
 // [GET] /api/potlucks/:potluck_id/foods
-router.get('/:potluck_id/foods', async (req, res, next) => {
+router.get('/:potluck_id/foods', checkPotluckId, async (req, res, next) => {
   try {
     const foods = await Potlucks.getByIdFoods(req.params.potluck_id);
     if (foods.length !== 0) {
