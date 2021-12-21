@@ -48,3 +48,17 @@ describe("[POST] /api/auth/register", () => {
     expect(res.body.message).toMatch(expectedMessage)
   })
 })
+
+describe("[POST] /api/auth/login", () => {
+  it('responds with the message "welcome back" and status code 200 if login request is successful', async () => {
+    const expectedMessage = /welcome back/i
+    const res = await request(server)
+      .post("/api/auth/login")
+      .send({
+        username: "frodo",
+        password: "1234"
+      })
+    expect(res.status).toBe(200)
+    expect(res.body.message).toMatch(expectedMessage)
+  })
+})
