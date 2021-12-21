@@ -5,7 +5,7 @@ const cors = require('cors');
 // Routers
 const authRouter = require('./auth/auth-router');
 const userRouter = require('./users/users-router');
-// const potluckRouter = require('./potlucks/potlucks-router');
+const potluckRouter = require('./potlucks/potlucks-router');
 // const restricted = require('./middleware/restricted');
 
 const server = express();
@@ -14,7 +14,7 @@ server.use(helmet());
 server.use(cors());
 
 // Routes
-// server.use('/api/potlucks', restricted, potluckRouter);
+server.use('/api/potlucks', potluckRouter);
 server.use('/api/users', userRouter);
 server.use('/api/auth', authRouter);
 
