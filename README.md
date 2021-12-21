@@ -47,7 +47,7 @@ _Response_
   "user_id": 1
 }
 ```
-## TODO: USERS
+## USERS
 
 ### [GET] /api/users _(RESTRICTED)_
 
