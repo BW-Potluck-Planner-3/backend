@@ -79,3 +79,153 @@ _Response_
   "username": "user"
 }
 ```
+
+## POTLUCKS _(RESTRICTED)_
+
+### [GET] /api/potlucks
+- Retruns array of potlucks in database
+  
+_Response_
+```json
+[
+  {
+    "potluck_id": 1,
+    "potluck_name": "potluck 1",
+    "date": "2021-12-21",,
+    "time": "11:00:00",
+    "location": "america",
+    "user_id": 1
+  }
+]
+```
+### [GET] /api/potlucks/:potluck_id
+- Returns array of potlucks by potluck ID
+
+```json
+[
+  {
+    "potluck_id": 1,
+    "potluck_name": "potluck 1",
+    "date": "2021-12-21",,
+    "time": "11:00:00",
+    "location": "america",
+    "user_id": 1
+    "guests": [
+      {
+        "user_id": 1,
+        "username": "user",
+        "attending": true
+      }
+    ]
+    "foods": [
+      {
+        "food_name": "pizza",
+        "user_id": 1,
+        "username": "user"
+      }
+    ]
+  }
+]
+```
+### [GET] /api/potlucks/:potluck_id/guests
+- Returns array of guests by potluck ID
+
+```json
+[
+ {
+  "user_id": 1,
+  "username": "user",
+  "attending": true
+ }
+]
+```
+### [GET] /api/potlucks/:potluck_id/foods
+
+- Returns array of food by potluck ID
+
+```json
+[
+ {
+  "food_name": "pizza",
+  "user_id": 1,
+  "username": "user"
+ }
+]
+```
+### [POST] /api/users/:user_id/potlucks
+- Creates new potluck object by individual users
+  - _potluck_name required_
+  - _date required_
+  - _time required_
+  - _location required_
+  
+_Send_
+```json
+{
+ "potluck_name": "potluck 1",
+ "date": "2021-12-21",
+ "time": "12:00:00",
+ "location": "nowhere"
+}
+```
+_Response_
+```json
+{
+ "potluck_name": "potluck 1",
+ "date": "2021-12-21",
+ "time": "12:00:00",
+ "location": "nowhere"
+ "user_id": 1,
+ "guests": [
+  {
+    "user_id": 1,
+    "username": "user",
+    "attending": true,
+  }
+ ]
+}
+```
+### [POST] /api/potlucks/:potluck_id/guests
+
+- Add guests by potluck ID
+  - _user_id required_
+  - _attending required_
+
+_Send_
+```json
+{
+ "user_id": 1,
+ "attending": true
+}
+```
+
+_Response_
+```json
+{
+ "user_id": 1,
+ "username": "user",
+ "attending": true
+}
+```
+
+## [POST] /api/potlucks/:potluck_id/foods
+- Add food by potluck ID
+  - food_name required
+
+_Send_
+```json
+{
+  "food_name": "pizza",
+}
+```
+
+_Response_
+```json
+[
+ {
+  "food_name": "pizza",
+  "user_id": 1,
+  "username": "user"
+ }
+]
+  
