@@ -7,6 +7,21 @@ const getBy = (filter) => db('users').where(filter);
 
 const getById = (user_id) => db('users').where({ user_id }).first();
 
+const getByIdPotlucks = (user_id) => {
+  return db('guests as g')
+    .join('potlucks as p', 'g.potluck_id', 'p.potluck_id')
+    .where('g.user_id', user_id)
+    .select(
+      'g.potluck_id',
+      'g.attending',
+      'p.potluck_name',
+      'p.date',
+      'p.time',
+      'p.location'
+    )
+    .orderBy('g.potluck_id');
+};
+
 const add = async ({ username, password }) => {
   const [newUserObj] = await db('users').insert(
     { username: lowerCase(username), password },
@@ -19,5 +34,6 @@ module.exports = {
   getAll,
   getBy,
   getById,
+  getByIdPotlucks,
   add,
 };
