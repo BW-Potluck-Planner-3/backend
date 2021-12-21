@@ -61,4 +61,25 @@ describe("[POST] /api/auth/login", () => {
     expect(res.status).toBe(200)
     expect(res.body.message).toMatch(expectedMessage)
   })
+  it('responds with a token if login request is successful', async () => {
+    const res = await request(server)
+      .post("/api/auth/login")
+      .send({
+        username: "sam",
+        password: "1234"
+      })
+    expect(res.status).toBe(200)
+    expect(res.body).toHaveProperty("token")
+  })
+  it('responds with the message "invalid credentials" and status code 401 if login request is invalid', async () => {
+    const expectedMessage = /invalid credentials/i
+    const res = await request(server)
+      .post("/api/auth/login")
+      .send({
+        username: "sam",
+        password: "abcd"
+      })
+    expect(res.status).toBe(401)
+    expect(res.body.message).toMatch(expectedMessage)
+  })
 })
