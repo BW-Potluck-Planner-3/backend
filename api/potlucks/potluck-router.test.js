@@ -47,8 +47,26 @@ describe("[GET] /api/potlucks", () => {
         .get("/api/potlucks")
     })
     it("responds with the message 'token required'", () => {
-      const expected = "token required"
+      const expected = /token required/i
       expect(res.body.message).toMatch(expected)
+    })
+    it("responds with the status code 401", () => {
+      expect(res.status).toBe(401)
+    })
+  })
+  describe("invalid token", () => {
+    let res
+    beforeEach(async () => {
+      res = await request(server)
+        .get("/api/potlucks")
+        .set("Authorization", "junk")
+    })
+    it("responds with the message 'token required'", () => {
+      const expected = /invalid token/i
+      expect(res.body.message).toMatch(expected)
+    })
+    it("responds with the status code 401", () => {
+      expect(res.status).toBe(401)
     })
   })
 })
