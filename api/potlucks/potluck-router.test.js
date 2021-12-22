@@ -97,4 +97,18 @@ describe("[GET] - /api/potlucks/:potluck_id", () => {
       expect(res.status).toBe(200)
     })
   })
+  describe("requesting with no token", () => {
+    let res
+    beforeEach(async () => {
+      res = await request(server)
+        .get("/api/potlucks/2")
+    })
+    it("responds with the message 'token required'", () => {
+      const expected = /token required/i
+      expect(res.body.message).toMatch(expected)
+    })
+    it("responds with the status code 401", () => {
+      expect(res.status).toBe(401)
+    })
+  })
 })
