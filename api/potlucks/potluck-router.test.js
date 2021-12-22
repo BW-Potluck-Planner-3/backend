@@ -30,13 +30,16 @@ describe("[GET] - /api/potlucks", () => {
         .set("Authorization", loginRes.body.token)
     })
     it("responds with an array of potlucks", () => {
-      expect(res.body).toHaveLength(2)
-      expect(res.body[0] && res.body[1]).toHaveProperty("date")
-      expect(res.body[0] && res.body[1]).toHaveProperty("location")
-      expect(res.body[0] && res.body[1]).toHaveProperty("time")
-      expect(res.body[0] && res.body[1]).toHaveProperty("potluck_name")
-      expect(res.body[0] && res.body[1]).toHaveProperty("potluck_id")
-      expect(res.body[0] && res.body[1]).toHaveProperty("user_id")
+      const actual = res.body
+      expect(actual).toHaveLength(3)
+      actual.forEach(potluck => {
+        expect(potluck).toHaveProperty("date")
+        expect(potluck).toHaveProperty("location")
+        expect(potluck).toHaveProperty("time")
+        expect(potluck).toHaveProperty("potluck_name")
+        expect(potluck).toHaveProperty("potluck_id")
+        expect(potluck).toHaveProperty("user_id")
+      })
     })
     it("responds with the status code 200", () => {
       expect(res.status).toBe(200)
@@ -106,15 +109,15 @@ describe("[GET] - /api/potlucks/:potluck_id", () => {
       expect(res.status).toBe(200)
     })
 
-    describe("requesting a nonexistent potluck", () => {
+    describe("to get a nonexistent potluck", () => {
       let res
       beforeEach(async () => {
         res = await request(server)
-          .get("/api/potlucks/3")
+          .get("/api/potlucks/8")
           .set("Authorization", loginRes.body.token)
       })
       it("responds with 'potluck with id _#_ not found'", () => {
-        const expected = /potluck with id 3 not found/i
+        const expected = /potluck with id 8 not found/i
         expect(res.body.message).toMatch(expected)
       })
       it("responds with the status code 404", () => {
@@ -188,15 +191,15 @@ describe("[GET] - /api/potlucks/:potluck_id/guests", () => {
       expect(res.status).toBe(200)
     })
 
-    describe("requesting guests from a nonexistent potluck", () => {
+    describe("to get guests from a nonexistent potluck", () => {
       let res
       beforeEach(async () => {
         res = await request(server)
-          .get("/api/potlucks/3/guests")
+          .get("/api/potlucks/8/guests")
           .set("Authorization", loginRes.body.token)
       })
       it("responds with 'potluck with id _#_ not found'", () => {
-        const expected = /potluck with id 3 not found/i
+        const expected = /potluck with id 8 not found/i
         expect(res.body.message).toMatch(expected)
       })
       it("responds with the status code 404", () => {
@@ -270,15 +273,15 @@ describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
       expect(res.status).toBe(200)
     })
 
-    describe("requesting foods from a nonexistent potluck", () => {
+    describe("foods from a nonexistent potluck", () => {
       let res
       beforeEach(async () => {
         res = await request(server)
-          .get("/api/potlucks/3/foods")
+          .get("/api/potlucks/8/foods")
           .set("Authorization", loginRes.body.token)
       })
       it("responds with 'potluck with id _#_ not found'", () => {
-        const expected = /potluck with id 3 not found/i
+        const expected = /potluck with id 8 not found/i
         expect(res.body.message).toMatch(expected)
       })
       it("responds with the status code 404", () => {
@@ -315,6 +318,40 @@ describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
     })
     it("responds with the status code 401", () => {
       expect(res.status).toBe(401)
+    })
+  })
+})
+
+/* ========== [POST] - /api/potlucks/:potluck_id/guests ========== */
+
+describe("[POST] - /api/potlucks/:potluck_id/guests", () => {
+  describe("requesting with a valid token", () => {
+    let loginRes
+    beforeEach(async () => {
+      loginRes = await request(server)
+        .post("/api/auth/login")
+        .send({
+          username: "SaM",
+          password: "1234"
+        })
+    })
+    describe("to add a valid guest to a potluck", () => {
+      it("resonds with the newly created guest object", async () => {
+        const res = await request(server)
+          .post("/api/potlucks/3/guests")
+          .send({
+            user_id: 5,
+            attending: true
+          })
+          .set("Authorization", loginRes.body.token)
+        const actual = res.body
+        expect(actual).toHaveLength(1)
+        actual.forEach(guest => {
+          expect(guest).toHaveProperty("user_id")
+          expect(guest).toHaveProperty("username")
+          expect(guest).toHaveProperty("attending")
+        })
+      })
     })
   })
 })
