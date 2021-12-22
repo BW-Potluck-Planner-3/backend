@@ -47,9 +47,9 @@ _Response_
   "user_id": 1
 }
 ```
-## USERS
+## USERS _(RESTRICTED)_
 
-### [GET] /api/users _(RESTRICTED)_
+### [GET] /api/users
 
 - Return array of users
   - _requires token in header_
@@ -67,7 +67,7 @@ _Response_
   }
 ]
 ```
-### [GET] /api/users/:user_id _(RESTRICTED)_
+### [GET] /api/users/:user_id
 
 - Return user with specified user_id
   - _requires token in header_
@@ -80,8 +80,9 @@ _Response_
 }
 ```
 
-### [POST] /api/users _(RESTRICTED)_
-- Takes in a username, finds the user by that username, and returns that user's user_id inside of an object
+### [POST] /api/users
+- Returns a user's user_id inside of an object
+  - Requires an existing user's _username_
 
 _Send_
 ```json
