@@ -13,6 +13,8 @@ afterAll(async () => {
   await db.destroy()
 })
 
+/* ========== [GET] - /api/potlucks ========== */
+
 describe("[GET] - /api/potlucks", () => {
   describe("requesting with a valid token", () => {
     let res
@@ -40,6 +42,7 @@ describe("[GET] - /api/potlucks", () => {
       expect(res.status).toBe(200)
     })
   })
+
   describe("requesting with no token", () => {
     let res
     beforeEach(async () => {
@@ -54,6 +57,7 @@ describe("[GET] - /api/potlucks", () => {
       expect(res.status).toBe(401)
     })
   })
+
   describe("requesting with an invalid token", () => {
     let res
     beforeEach(async () => {
@@ -70,6 +74,8 @@ describe("[GET] - /api/potlucks", () => {
     })
   })
 })
+
+/* ========== [GET] - /api/potlucks/:potluck_id ========== */
 
 describe("[GET] - /api/potlucks/:potluck_id", () => {
   describe("requesting with a valid token", () => {
@@ -99,6 +105,7 @@ describe("[GET] - /api/potlucks/:potluck_id", () => {
         .set("Authorization", loginRes.body.token)
       expect(res.status).toBe(200)
     })
+
     describe("requesting a nonexistent potluck", () => {
       let res
       beforeEach(async () => {
@@ -115,6 +122,7 @@ describe("[GET] - /api/potlucks/:potluck_id", () => {
       })
     })
   })
+
   describe("requesting with no token", () => {
     let res
     beforeEach(async () => {
@@ -129,11 +137,12 @@ describe("[GET] - /api/potlucks/:potluck_id", () => {
       expect(res.status).toBe(401)
     })
   })
+
   describe("requesting with an invalid token", () => {
     let res
     beforeEach(async () => {
       res = await request(server)
-        .get("/api/potlucks/:potluck_id")
+        .get("/api/potlucks/2")
         .set("Authorization", "megaJunk")
     })
     it("responds with the message 'invalid token'", () => {
@@ -145,6 +154,8 @@ describe("[GET] - /api/potlucks/:potluck_id", () => {
     })
   })
 })
+
+/* ========== [GET] - /api/potlucks/:potluck_id/guests ========== */
 
 describe("[GET] - /api/potlucks/:potluck_id/guests", () => {
   describe("requesting with a valid token", () => {
@@ -176,6 +187,7 @@ describe("[GET] - /api/potlucks/:potluck_id/guests", () => {
         .set("Authorization", loginRes.body.token)
       expect(res.status).toBe(200)
     })
+
     describe("requesting guests from a nonexistent potluck", () => {
       let res
       beforeEach(async () => {
@@ -190,6 +202,37 @@ describe("[GET] - /api/potlucks/:potluck_id/guests", () => {
       it("responds with the status code 404", () => {
         expect(res.status).toBe(404)
       })
+    })
+  })
+
+  describe("requesting with no token", () => {
+    let res
+    beforeEach(async () => {
+      res = await request(server)
+        .get("/api/potlucks/1/guests")
+    })
+    it("responds with the message 'token required'", () => {
+      const expected = /token required/i
+      expect(res.body.message).toMatch(expected)
+    })
+    it("responds with the status code 401", () => {
+      expect(res.status).toBe(401)
+    })
+  })
+
+  describe("requesting with an invalid token", () => {
+    let res
+    beforeEach(async () => {
+      res = await request(server)
+        .get("/api/potlucks/1/guests")
+        .set("Authorization", "megaJunk")
+    })
+    it("responds with the message 'invalid token'", () => {
+      const expected = /invalid token/i
+      expect(res.body.message).toMatch(expected)
+    })
+    it("responds with the status code 401", () => {
+      expect(res.status).toBe(401)
     })
   })
 })
