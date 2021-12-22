@@ -13,8 +13,8 @@ afterAll(async () => {
   await db.destroy()
 })
 
-describe("[GET] /api/potlucks", () => {
-  describe("success", () => {
+describe("[GET] - /api/potlucks", () => {
+  describe("requesting with a valid token", () => {
     let res
     beforeEach(async () => {
       const loginRes = await request(server)
@@ -40,7 +40,7 @@ describe("[GET] /api/potlucks", () => {
       expect(res.status).toBe(200)
     })
   })
-  describe("token required", () => {
+  describe("requesting with no token", () => {
     let res
     beforeEach(async () => {
       res = await request(server)
@@ -54,7 +54,7 @@ describe("[GET] /api/potlucks", () => {
       expect(res.status).toBe(401)
     })
   })
-  describe("invalid token", () => {
+  describe("requesting with an invalid token", () => {
     let res
     beforeEach(async () => {
       res = await request(server)
@@ -67,6 +67,34 @@ describe("[GET] /api/potlucks", () => {
     })
     it("responds with the status code 401", () => {
       expect(res.status).toBe(401)
+    })
+  })
+})
+
+describe("[GET] - /api/potlucks/:potluck_id", () => {
+  describe("requesting with a valid token", () => {
+    let res
+    beforeEach(async () => {
+      const loginRes = await request(server)
+        .post("/api/auth/login")
+        .send({
+          username: "PiPPiN",
+          password: "1234"
+        })
+      res = await request(server)
+        .get("/api/potlucks/2")
+        .set("Authorization", loginRes.body.token)
+    })
+    it("responds with a single potluck object if request headers authorization is valid", () => {
+      expect(res.body).toHaveProperty("date")
+      expect(res.body).toHaveProperty("location")
+      expect(res.body).toHaveProperty("time")
+      expect(res.body).toHaveProperty("potluck_name")
+      expect(res.body).toHaveProperty("potluck_id", 2)
+      expect(res.body).toHaveProperty("user_id", 3)
+    })
+    it("responds with the status code 200", () => {
+      expect(res.status).toBe(200)
     })
   })
 })
