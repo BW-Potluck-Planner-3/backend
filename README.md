@@ -80,11 +80,28 @@ _Response_
 }
 ```
 
+### [POST] /api/users _(RESTRICTED)_
+- Takes in a username, finds the user by that username, and returns that user's user_id inside of an object
+
+_Send_
+```json
+{
+  "username": "user",
+}
+```
+
+_Response_
+```json
+{
+  "user_id": 1,
+}
+```
+
 ## POTLUCKS _(RESTRICTED)_
 
 ### [GET] /api/potlucks
-- Retruns array of potlucks in database
-  
+- Returns array of potlucks in database
+
 _Response_
 ```json
 [
@@ -158,7 +175,7 @@ _Response_
   - _date required_
   - _time required_
   - _location required_
-  
+
 _Send_
 ```json
 {
@@ -228,4 +245,3 @@ _Response_
   "username": "user"
  }
 ]
-  
