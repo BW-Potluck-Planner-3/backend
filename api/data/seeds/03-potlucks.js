@@ -5,7 +5,8 @@ const {
 
 const potluckDates = [
   new Date(Date.UTC(2022, 2, 3, 13, 30)),
-  new Date(Date.UTC(2022, 1, 12, 14, 30))
+  new Date(Date.UTC(2022, 1, 12, 14, 30)),
+  new Date(Date.UTC(2022, 4, 9, 18, 0))
 ]
 
 const potlucks = [
@@ -22,6 +23,13 @@ const potlucks = [
     time: getTime(potluckDates[1]),
     location: "The Shire",
     user_id: 3
+  },
+  {
+    potluck_name: "Tom's Roarin' Dusk Feast",
+    date: getDate(potluckDates[2]),
+    time: getTime(potluckDates[2]),
+    location: "Gondor",
+    user_id: 5
   },
 ]
 
