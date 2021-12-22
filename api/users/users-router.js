@@ -3,7 +3,7 @@ const Users = require('./users-model');
 const Potlucks = require('../potlucks/potlucks-model');
 const {
   checkPotluck,
-  checkIfUserExists,
+  findUserByUsername,
 } = require('./users-middleware');
 
 // [GET] /api/users
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
 });
 
 // [POST] /api/users/
-router.post('/', checkIfUserExists, async (req, res, next) => {
+router.post('/', findUserByUsername, async (req, res, next) => {
   const { user_id } = req.user
   try {
     res.status(200).json({ user_id });
@@ -32,7 +32,7 @@ router.get('/:user_id', async (req, res) => {
 });
 
 // [GET] /api/users/:user_id/potlucks
-router.get('/:user_id/potlucks', checkIfUserExists, async (req, res, next) => {
+router.get('/:user_id/potlucks', findUserByUsername, async (req, res, next) => {
   try {
     const potlucks = await Users.getByIdPotlucks(req.params.user_id);
     res.json(potlucks);

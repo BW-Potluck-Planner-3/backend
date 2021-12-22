@@ -1,4 +1,5 @@
 const Potlucks = require('./potlucks-model');
+const Users = require("../users/users-model")
 
 const checkPotluckId = async (req, res, next) => {
   try {
@@ -17,4 +18,29 @@ const checkPotluckId = async (req, res, next) => {
   }
 };
 
-module.exports = { checkPotluckId };
+async function validateAddGuestPayload(req, res, next) {
+  const { user_id, attending } = req.body
+  if (!user_id || !attending || typeof attending !== "boolean") {
+    next({
+      status: 400,
+      message: "Please provide a user_id and an attending boolean"
+    })
+  }
+  const existingUser = await Users.getById(user_id)
+  if (!existingUser) {
+    return next({
+      status: 404,
+      message: `User with id of ${user_id} does not exist`
+    })
+  }
+  req.body.guest = {
+    user_id: existingUser.user_id,
+    attending: req.body.attending
+  }
+  return next()
+}
+
+module.exports = {
+  checkPotluckId,
+  validateAddGuestPayload
+};

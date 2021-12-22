@@ -1,4 +1,3 @@
-const Potlucks = require('../potlucks/potlucks-model');
 const Users = require("./users-model")
 
 const checkPotluck = (req, res, next) => {
@@ -16,7 +15,7 @@ const checkPotluck = (req, res, next) => {
   next();
 };
 
-async function checkIfUserExists(req, res, next) {
+async function findUserByUsername(req, res, next) {
   const { username } = req.body
   if (!username) {
     return next({
@@ -37,5 +36,5 @@ async function checkIfUserExists(req, res, next) {
 
 module.exports = {
   checkPotluck,
-  checkIfUserExists,
+  findUserByUsername
 };
