@@ -27,7 +27,7 @@ describe("[GET] /api/potlucks", () => {
         .get("/api/potlucks")
         .set("Authorization", loginRes.body.token)
     })
-    it("responds with an array of potlucks if request headers authorization is valid", async () => {
+    it("responds with an array of potlucks if request headers authorization is valid", () => {
       expect(res.body).toHaveLength(2)
       expect(res.body[0] && res.body[1]).toHaveProperty("date")
       expect(res.body[0] && res.body[1]).toHaveProperty("location")
@@ -38,6 +38,17 @@ describe("[GET] /api/potlucks", () => {
     })
     it("responds with the status code 200", () => {
       expect(res.status).toBe(200)
+    })
+  })
+  describe("token required", () => {
+    let res
+    beforeEach(async () => {
+      res = await request(server)
+        .get("/api/potlucks")
+    })
+    it("responds with the message 'token required'", () => {
+      const expected = "token required"
+      expect(res.body.message).toMatch(expected)
     })
   })
 })
