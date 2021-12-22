@@ -1,4 +1,5 @@
 const Potlucks = require('../potlucks/potlucks-model');
+const Users = require("./users-model")
 
 const checkPotluck = (req, res, next) => {
   if (Object.keys(req.body).length === 0)
@@ -15,6 +16,26 @@ const checkPotluck = (req, res, next) => {
   next();
 };
 
+async function checkIfUserExists(req, res, next) {
+  const { username } = req.body
+  if (!username) {
+    return next({
+      status: 400,
+      message: `Username must be provided`
+    })
+  }
+  const [existingUser] = await Users.getBy({ username })
+  if (!existingUser) {
+    return next({
+      status: 404,
+      message: `${username} does not exist`
+    })
+  }
+  req.user = existingUser
+  return next()
+}
+
 module.exports = {
   checkPotluck,
+  checkIfUserExists,
 };
