@@ -98,6 +98,40 @@ _Response_
 }
 ```
 
+### [POST] /api/users/:user_id/potlucks
+- Creates new potluck object by individual users
+  - _potluck_name required_
+  - _date required_
+  - _time required_
+  - _location required_
+
+_Send_
+```json
+{
+ "potluck_name": "potluck 1",
+ "date": "2021/12/21",
+ "time": "12:00",
+ "location": "nowhere"
+}
+```
+_Response_
+```json
+{
+ "potluck_name": "potluck 1",
+ "date": "2021/12/21",
+ "time": "12:00",
+ "location": "nowhere",
+ "user_id": 1,
+ "guests": [
+  {
+    "user_id": 1,
+    "username": "user",
+    "attending": true,
+  }
+ ]
+}
+```
+
 ## POTLUCKS _(RESTRICTED)_
 
 ### [GET] /api/potlucks
@@ -109,8 +143,8 @@ _Response_
   {
     "potluck_id": 1,
     "potluck_name": "potluck 1",
-    "date": "2021-12-21",,
-    "time": "11:00:00",
+    "date": "2021/12/21",,
+    "time": "11:00",
     "location": "america",
     "user_id": 1
   }
@@ -124,8 +158,8 @@ _Response_
   {
     "potluck_id": 1,
     "potluck_name": "potluck 1",
-    "date": "2021-12-21",,
-    "time": "11:00:00",
+    "date": "2021/12/21",,
+    "time": "11:00",
     "location": "america",
     "user_id": 1
     "guests": [
@@ -152,14 +186,19 @@ _Response_
 [
  {
   "user_id": 1,
-  "username": "user",
+  "username": "user1",
   "attending": true
+ },
+ {
+  "user_id": 3,
+  "username": "user3",
+  "attending": false
  }
 ]
 ```
 ### [GET] /api/potlucks/:potluck_id/foods
 
-- Returns array of food by potluck ID
+- Returns an array of food by potluck ID
 
 ```json
 [
@@ -170,51 +209,25 @@ _Response_
  }
 ]
 ```
-### [POST] /api/users/:user_id/potlucks
-- Creates new potluck object by individual users
-  - _potluck_name required_
-  - _date required_
-  - _time required_
-  - _location required_
 
-_Send_
-```json
-{
- "potluck_name": "potluck 1",
- "date": "2021-12-21",
- "time": "12:00:00",
- "location": "nowhere"
-}
-```
-_Response_
-```json
-{
- "potluck_name": "potluck 1",
- "date": "2021-12-21",
- "time": "12:00:00",
- "location": "nowhere"
- "user_id": 1,
- "guests": [
-  {
-    "user_id": 1,
-    "username": "user",
-    "attending": true,
-  }
- ]
-}
-```
 ### [POST] /api/potlucks/:potluck_id/guests
 
-- Add guests by potluck ID
+- Add an array of guests by potluck ID
   - _user_id required_
   - _attending required_
 
 _Send_
 ```json
-{
- "user_id": 1,
- "attending": true
-}
+[
+  {
+   "user_id": 1,
+   "attending": true
+  },
+  {
+   "user_id": 2,
+   "attending": false
+  }
+]
 ```
 
 _Response_
@@ -226,8 +239,8 @@ _Response_
 }
 ```
 
-## [POST] /api/potlucks/:potluck_id/foods
-- Add food by potluck ID
+### [POST] /api/potlucks/:potluck_id/foods
+- Adds a food to a potluck
   - food_name required
 
 _Send_
