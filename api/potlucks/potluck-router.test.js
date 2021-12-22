@@ -236,3 +236,54 @@ describe("[GET] - /api/potlucks/:potluck_id/guests", () => {
     })
   })
 })
+
+/* ========== [GET] - /api/potlucks/:potluck_id/foods ========== */
+
+describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
+  describe("requesting with a valid token", () => {
+    let loginRes
+    beforeEach(async () => {
+      loginRes = await request(server)
+        .post("/api/auth/login")
+        .send({
+          username: "meRRy",
+          password: "1234"
+        })
+    })
+    it("responds with an array containing food objects connected to the specified potluck", async () => {
+      const res = await request(server)
+        .get("/api/potlucks/1/foods")
+        .set("Authorization", loginRes.body.token)
+      const expectedLength = 3
+      const actual = res.body
+      expect(actual).toHaveLength(expectedLength)
+      actual.forEach(food => {
+        expect(food).toHaveProperty("food_name")
+        expect(food).toHaveProperty("user_id")
+        expect(food).toHaveProperty("username")
+      })
+    })
+    it("responds with the status code 200", async () => {
+      const res = await request(server)
+        .get("/api/potlucks/1/foods")
+        .set("Authorization", loginRes.body.token)
+      expect(res.status).toBe(200)
+    })
+
+    describe("requesting foods from a nonexistent potluck", () => {
+      let res
+      beforeEach(async () => {
+        res = await request(server)
+          .get("/api/potlucks/3/foods")
+          .set("Authorization", loginRes.body.token)
+      })
+      it("responds with 'potluck with id _#_ not found'", () => {
+        const expected = /potluck with id 3 not found/i
+        expect(res.body.message).toMatch(expected)
+      })
+      it("responds with the status code 404", () => {
+        expect(res.status).toBe(404)
+      })
+    })
+  })
+})
