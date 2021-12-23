@@ -58,6 +58,7 @@ const validateLogin = async (req, res, next) => {
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = tokenBuilder(user);
       req.token = token;
+      req.user_id = user.user_id
       next();
     } else {
       next({
