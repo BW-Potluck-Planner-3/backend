@@ -177,7 +177,7 @@ describe("[GET] - /api/users/:user_id", () => {
 
 })
 
-// ====================
+/* ========== [GET] - /api/users/:user_id/potlucks ========== */
 
 describe("[GET] - /api/users/:user_id/potlucks", () => {
   describe("requesting with a valid token", () => {
@@ -225,6 +225,56 @@ describe("[GET] - /api/users/:user_id/potlucks", () => {
       it("responds with the status code 404", () => {
         expect(errorRes.status).toBe(404)
       })
+    })
+  })
+
+  runTokenTests("/api/users/1")
+
+})
+
+/* ========== [POST] - /api/users/:user_id/potlucks ========== */
+
+describe("[POST] - /api/users/:user_id/potlucks", () => {
+  describe("requesting with a valid token", () => {
+    let res
+    let errorRes
+    beforeAll(async () => {
+      const loginRes = await request(server)
+        .post("/api/auth/login")
+        .send({
+          username: "meRRY",
+          password: "1234"
+        })
+      res = await request(server)
+        .post("/api/users/2/potlucks")
+        .send({
+          potluck_name: "test",
+          date: "1/2/3",
+          time: "5:40 PM",
+          location: "somewhere",
+        })
+        .set("Authorization", loginRes.body.token)
+      errorRes = await request(server)
+        .post("/api/users/100/potlucks")
+        .send({
+          garbage: "yes"
+        })
+        .set("Authorization", loginRes.body.token)
+    })
+    describe("to add a new potluck", () => {
+      it("responds with the newly created potluck", () => {
+        const actual = res.body
+        expect(actual).toHaveProperty("date")
+        expect(actual).toHaveProperty("location")
+        expect(actual).toHaveProperty("time")
+        expect(actual).toHaveProperty("potluck_name")
+        expect(actual).toHaveProperty("potluck_id")
+        expect(actual).toHaveProperty("user_id")
+        expect(actual).toHaveProperty("guests")
+      })
+    })
+    it("responds with the status code 201", () => {
+      expect(res.status).toBe(201)
     })
   })
 
