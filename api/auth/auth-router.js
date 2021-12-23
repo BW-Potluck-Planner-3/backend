@@ -29,6 +29,7 @@ router.post('/login', validateEmptyFields, validateLogin, (req, res, next) => {
   res.status(200).json({
     message: `Welcome back ${req.body.username}!`,
     token: req.token,
+    user_id: req.user_id
   });
   next();
 });
