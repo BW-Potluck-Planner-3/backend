@@ -15,6 +15,18 @@ const checkPotluck = (req, res, next) => {
   next();
 };
 
+async function findUserById(req, res, next) {
+  const { user_id } = req.params
+  const existingUser = await Users.getById(user_id)
+  if (!existingUser) {
+    return next({
+      status: 404,
+      message: `User with id ${user_id} not found`
+    })
+  }
+  return next()
+}
+
 async function findUserByUsername(req, res, next) {
   const { username } = req.body
   if (!username) {
@@ -36,5 +48,6 @@ async function findUserByUsername(req, res, next) {
 
 module.exports = {
   checkPotluck,
+  findUserById,
   findUserByUsername
 };

@@ -12,7 +12,7 @@
     "rollbackh": "heroku run knex migrate:rollback -a potluck-planner-3-ft",
     "databaseh": "heroku pg:psql -a potluck-planner-3-ft",
     "seedh": "heroku run knex seed:run -a potluck-planner-3-ft",
-    "test": "cross-env NODE_ENV=testing jest --verbose --runInBand",
+    "test": "cross-env NODE_ENV=testing jest --verbose --runInBand --watchAll",
     "deploy": "git push heroku main"
   },
   "engines": {

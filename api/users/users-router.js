@@ -4,6 +4,7 @@ const Potlucks = require('../potlucks/potlucks-model');
 const {
   checkPotluck,
   findUserByUsername,
+  findUserById,
 } = require('./users-middleware');
 
 // [GET] /api/users
@@ -22,20 +23,26 @@ router.post('/', findUserByUsername, async (req, res, next) => {
 });
 
 // [GET] /api/users/:user_id
-router.get('/:user_id', async (req, res) => {
+router.get('/:user_id', findUserById, async (req, res, next) => {
   try {
     const { user_id, username } = await Users.getById(req.params.user_id);
     res.json({ user_id, username });
   } catch (err) {
-    res.json({ message: `User with id ${req.params.user_id} not found` });
+    next(err)
   }
 });
 
 // [GET] /api/users/:user_id/potlucks
-router.get('/:user_id/potlucks', findUserByUsername, async (req, res, next) => {
+router.get('/:user_id/potlucks', findUserById, async (req, res, next) => {
   try {
-    const potlucks = await Users.getByIdPotlucks(req.params.user_id);
-    res.json(potlucks);
+    const potlucks = await Users.getPotlucksByUser(req.params.user_id);
+    if (potlucks.length === 0) {
+      res.json({
+        message: `No potlucks found for User_ID ${req.params.user_id}`,
+      });
+    } else {
+      res.json(potlucks);
+    }
   } catch (err) {
     next(err);
   }
