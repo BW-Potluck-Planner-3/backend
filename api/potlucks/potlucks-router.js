@@ -133,6 +133,21 @@ router.put(
   }
 );
 
+// [DELETE] /api/potlucks/:potluck_id
+router.delete(
+  '/:potluck_id',
+  checkPotluckId,
+  validatePotluckPayload,
+  async (req, res, next) => {
+    try {
+      const potluck = await Potlucks.remove(req.params.potluck_id);
+      res.status(200).json(potluck);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 // [DELETE] /api/potlucks/:potluck_id/guests
 router.delete(
   '/:potluck_id/guests',
