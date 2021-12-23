@@ -57,6 +57,13 @@ const addFood = (potluck_id, food) => {
     });
 };
 
+const update = (potluck_id, changes) => {
+  return db('potlucks')
+    .where({ potluck_id })
+    .update(changes)
+    .then(() => getById(potluck_id));
+};
+
 const remove = (potluck_id) => db('potlucks').where({ potluck_id }).del();
 
 module.exports = {
@@ -67,5 +74,6 @@ module.exports = {
   addPotluck,
   addGuest,
   addFood,
+  update,
   remove,
 };
