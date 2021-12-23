@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Potlucks = require('./potlucks-model');
 const {
   checkPotluckId,
+  validatePotluckPayload,
   validateAddGuestPayload,
 } = require('./potluck-middleware');
 
@@ -61,16 +62,22 @@ router.get('/:potluck_id/foods', checkPotluckId, async (req, res, next) => {
 });
 
 // [POST] /api/potlucks/:potluck_id/guests
-router.post('/:potluck_id/guests',
+router.post(
+  '/:potluck_id/guests',
   checkPotluckId,
-  validateAddGuestPayload, async (req, res, next) => {
+  validateAddGuestPayload,
+  async (req, res, next) => {
     try {
-      const guest = await Potlucks.addGuest(req.params.potluck_id, req.body.guest);
+      const guest = await Potlucks.addGuest(
+        req.params.potluck_id,
+        req.body.guest
+      );
       res.status(201).json(guest);
     } catch (err) {
       next(err);
     }
-  });
+  }
+);
 
 // [POST] /api/potlucks/:potluck_id/foods
 router.post('/:potluck_id/foods', checkPotluckId, async (req, res, next) => {
@@ -81,5 +88,20 @@ router.post('/:potluck_id/foods', checkPotluckId, async (req, res, next) => {
     next(err);
   }
 });
+
+// [PUT] /api/potlucks/:potluck_id
+router.put(
+  '/:potluck_id',
+  checkPotluckId,
+  validatePotluckPayload,
+  async (req, res, next) => {
+    try {
+      const potluck = await Potlucks.update(req.params.potluck_id, req.body);
+      res.status(200).json(potluck);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 module.exports = router;
