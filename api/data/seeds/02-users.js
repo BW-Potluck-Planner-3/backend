@@ -6,6 +6,7 @@ const users = [
   { username: "frodo", password: bcrypt.hashSync("1234", BCRYPT_ROUNDS) },
   { username: "pippin", password: bcrypt.hashSync("1234", BCRYPT_ROUNDS) },
   { username: "merry", password: bcrypt.hashSync("1234", BCRYPT_ROUNDS) },
+  { username: "tom", password: bcrypt.hashSync("1234", BCRYPT_ROUNDS) },
 ]
 
 exports.seed = function (knex) {
