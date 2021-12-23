@@ -36,6 +36,40 @@ const validatePotluckPayload = async (req, res, next) => {
   }
 };
 
+const validateFoodPayload = async (req, res, next) => {
+  try {
+    const { food_name } = req.body;
+    if (!food_name) {
+      next({
+        status: 400,
+        message: 'food_name is required',
+      });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+const validateFoodExists = async (req, res, next) => {
+  try {
+    const { food_name } = req.body;
+    const potluckId = req.params.potluck_id;
+    const food = await Potlucks.getByIdFoods(potluckId);
+    if (food.some((item) => item.food_name === food_name)) {
+      next({
+        status: 400,
+        message: 'This food item already exists for this potluck',
+      });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 async function validateAddGuestPayload(req, res, next) {
   const { user_id, attending } = req.body;
   if (!user_id || !attending || typeof attending !== 'boolean') {
@@ -84,6 +118,8 @@ const validateUpdateGuestPayload = async (req, res, next) => {
 module.exports = {
   checkPotluckId,
   validatePotluckPayload,
+  validateFoodPayload,
+  validateFoodExists,
   validateAddGuestPayload,
   validateUpdateGuestPayload,
 };

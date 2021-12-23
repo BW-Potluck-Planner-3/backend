@@ -84,12 +84,7 @@ const removeFood = (potluck_id, food_name) => {
   return db('foods')
     .where({ food_name })
     .del()
-    .then(() => {
-      return db('food_potluck')
-        .where({ potluck_id, food_name })
-        .del()
-        .then(() => getByIdFoods(potluck_id));
-    });
+    .then(() => getByIdFoods(potluck_id));
 };
 
 module.exports = {
