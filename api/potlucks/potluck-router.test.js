@@ -434,4 +434,43 @@ describe("[POST] - /api/potlucks/:potluck_id/guests", () => {
       })
     })
   })
+
+  describe("requesting with no token", () => {
+    let res
+    beforeAll(async () => {
+      res = await request(server)
+        .post("/api/potlucks/3/guests")
+        .send({
+          user_id: 4,
+          attending: true
+        })
+    })
+    it("responds with the message 'token required'", () => {
+      const expected = /token required/i
+      expect(res.body.message).toMatch(expected)
+    })
+    it("responds with the status code 401", () => {
+      expect(res.status).toBe(401)
+    })
+  })
+
+  describe("requesting with an invalid token", () => {
+    let res
+    beforeAll(async () => {
+      res = await request(server)
+        .post("/api/potlucks/3/guests")
+        .send({
+          user_id: 1,
+          attending: true
+        })
+        .set("Authorization", "ultraJunk")
+    })
+    it("responds with the message 'invalid token'", () => {
+      const expected = /invalid token/i
+      expect(res.body.message).toMatch(expected)
+    })
+    it("responds with the status code 401", () => {
+      expect(res.status).toBe(401)
+    })
+  })
 })
