@@ -129,8 +129,36 @@ describe("[POST] - /api/users", () => {
         expect(res.status).toBe(400)
       })
     })
-
-    postReqTokenTests("/api/potlucks/3/guests", { username: "jimmy10000" })
-
   })
+
+  postReqTokenTests("/api/potlucks/3/guests", { username: "jimmy10000" })
+
+})
+
+describe("[GET] - /api/users/:user_id", () => {
+  describe("requesting with a valid token", () => {
+    let res
+    beforeEach(async () => {
+      const loginRes = await request(server)
+        .post("/api/auth/login")
+        .send({
+          username: "meRRY",
+          password: "1234"
+        })
+      res = await request(server)
+        .get("/api/users/1")
+        .set("Authorization", loginRes.body.token)
+    })
+    it("responds with an object containing a usersname and user_id", () => {
+      const actual = res.body
+      expect(actual).toHaveProperty("username")
+      expect(actual).toHaveProperty("user_id")
+    })
+    it("responds with the status code 200", () => {
+      expect(res.status).toBe(200)
+    })
+  })
+
+  getReqTokenTests("/api/users/1")
+
 })
