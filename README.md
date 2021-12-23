@@ -80,6 +80,24 @@ _Response_
 }
 ```
 
+### `[GET] /api/users/:user_id/potlucks`
+
+- Returns array of potlucks by user_id
+
+_Response_
+```json
+[
+  {
+    "potluck_id": 1,
+    "potluck_name": "Frodo's Farewell Party",
+    "date": "2/3/2022"
+    "time": "1:30 PM UTC",
+    "location": "The Shire",
+    "user_id": 2
+  }
+]
+```
+
 ### `[POST] /api/users`
 - Returns a user's user_id inside of an object
   - Requires an existing user's _username_
