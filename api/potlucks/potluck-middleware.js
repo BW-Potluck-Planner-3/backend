@@ -36,6 +36,7 @@ async function validateAddGuestPayload(req, res, next) {
   const potluck = await Potlucks.getById(req.params.potluck_id)
   if (potluck.user_id === user_id) {
     return next({
+      status: 400,
       message: "Cannot add a potluck organizer as their own guest"
     })
   }

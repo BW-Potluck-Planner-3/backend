@@ -275,7 +275,7 @@ describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
 
     describe("foods from a nonexistent potluck", () => {
       let res
-      beforeEach(async () => {
+      beforeAll(async () => {
         res = await request(server)
           .get("/api/potlucks/8/foods")
           .set("Authorization", loginRes.body.token)
@@ -292,7 +292,7 @@ describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
 
   describe("requesting with no token", () => {
     let res
-    beforeEach(async () => {
+    beforeAll(async () => {
       res = await request(server)
         .get("/api/potlucks/1/foods")
     })
@@ -307,7 +307,7 @@ describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
 
   describe("requesting with an invalid token", () => {
     let res
-    beforeEach(async () => {
+    beforeAll(async () => {
       res = await request(server)
         .get("/api/potlucks/1/foods")
         .set("Authorization", "ultraJunk")
@@ -327,7 +327,7 @@ describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
 describe("[POST] - /api/potlucks/:potluck_id/guests", () => {
   describe("requesting with a valid token", () => {
     let res
-    beforeEach(async () => {
+    beforeAll(async () => {
       const loginRes = await request(server)
         .post("/api/auth/login")
         .send({
@@ -359,7 +359,7 @@ describe("[POST] - /api/potlucks/:potluck_id/guests", () => {
 
     describe("to add a guest to a nonexistent potluck", () => {
       let res
-      beforeEach(async () => {
+      beforeAll(async () => {
         const loginRes = await request(server)
           .post("/api/auth/login")
           .send({
@@ -380,6 +380,57 @@ describe("[POST] - /api/potlucks/:potluck_id/guests", () => {
       })
       it("responds with the status code 404", () => {
         expect(res.status).toBe(404)
+      })
+    })
+
+    describe("to add a guest with bad request body", () => {
+      let res
+      beforeAll(async () => {
+        const loginRes = await request(server)
+          .post("/api/auth/login")
+          .send({
+            username: "SaM",
+            password: "1234"
+          })
+        res = await request(server)
+          .post("/api/potlucks/2/guests")
+          .set("Authorization", loginRes.body.token)
+          .send({
+            bad: "apple"
+          })
+      })
+      it("responds with 'Please provide a user_id and an attending boolean'", () => {
+        const expected = /Please provide a user_id and an attending boolean/i
+        expect(res.body.message).toMatch(expected)
+      })
+      it("responds with the status code 400", () => {
+        expect(res.status).toBe(400)
+      })
+    })
+
+    describe("to add the organizer of the potluck as their own guest", () => {
+      let res
+      beforeAll(async () => {
+        const loginRes = await request(server)
+          .post("/api/auth/login")
+          .send({
+            username: "sam",
+            password: "1234"
+          })
+        res = await request(server)
+          .post("/api/potlucks/3/guests")
+          .set("Authorization", loginRes.body.token)
+          .send({
+            user_id: 5,
+            attending: true
+          })
+      })
+      it("responds with 'Cannot add a potluck organizer as their own guest'", () => {
+        const expected = /cannot add a potluck organizer as their own guest/i
+        expect(res.body.message).toMatch(expected)
+      })
+      it("responds with the status code 400", () => {
+        expect(res.status).toBe(400)
       })
     })
   })
