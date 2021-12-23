@@ -32,10 +32,16 @@ router.get('/:user_id', async (req, res) => {
 });
 
 // [GET] /api/users/:user_id/potlucks
-router.get('/:user_id/potlucks', findUserByUsername, async (req, res, next) => {
+router.get('/:user_id/potlucks', async (req, res, next) => {
   try {
-    const potlucks = await Users.getByIdPotlucks(req.params.user_id);
-    res.json(potlucks);
+    const potlucks = await Users.getPotlucksByUser(req.params.user_id);
+    if (potlucks.length === 0) {
+      res.json({
+        message: `No potlucks found for User_ID ${req.params.user_id}`,
+      });
+    } else {
+      res.json(potlucks);
+    }
   } catch (err) {
     next(err);
   }

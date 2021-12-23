@@ -22,6 +22,10 @@ const getByIdPotlucks = (user_id) => {
     .orderBy('g.potluck_id');
 };
 
+const getPotlucksByUser = (user_id) => {
+  return db('potlucks as p').where({ user_id }).orderBy('p.potluck_id', 'desc');
+}
+
 const add = async ({ username, password }) => {
   const [newUserObj] = await db('users').insert(
     { username: lowerCase(username), password },
@@ -35,5 +39,6 @@ module.exports = {
   getBy,
   getById,
   getByIdPotlucks,
+  getPotlucksByUser,
   add,
 };
