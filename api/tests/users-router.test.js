@@ -261,13 +261,14 @@ describe("[POST] - /api/users/:user_id/potlucks", () => {
         })
         .set("Authorization", loginRes.body.token)
     })
-    describe("to add a new potluck", () => {
+
+    describe("to add a new valid potluck", () => {
       it("responds with the newly created potluck", () => {
         const actual = res.body
-        expect(actual).toHaveProperty("date")
-        expect(actual).toHaveProperty("location")
-        expect(actual).toHaveProperty("time")
-        expect(actual).toHaveProperty("potluck_name")
+        expect(actual).toHaveProperty("date", "1/2/3")
+        expect(actual).toHaveProperty("location", "somewhere")
+        expect(actual).toHaveProperty("time", "5:40 PM")
+        expect(actual).toHaveProperty("potluck_name", "test")
         expect(actual).toHaveProperty("potluck_id")
         expect(actual).toHaveProperty("user_id")
         expect(actual).toHaveProperty("guests")
@@ -276,8 +277,19 @@ describe("[POST] - /api/users/:user_id/potlucks", () => {
     it("responds with the status code 201", () => {
       expect(res.status).toBe(201)
     })
+
+    describe("to add an invalid potluck", () => {
+      it("responds with the message 'Potluck information required'", () => {
+        const actual = errorRes.body.message
+        const expected = /potluck information required/i
+        expect(actual).toMatch(expected)
+      })
+      it("responds with the status code 400", () => {
+        expect(errorRes.status).toBe(400)
+      })
+    })
   })
 
-  runTokenTests("/api/users/1")
+  runTokenTests("/api/users/2/potlucks", { potluck_name: "test", date: "1/2/3", time: "5:40 PM", location: "somewhere" })
 
 })
