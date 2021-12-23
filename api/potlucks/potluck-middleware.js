@@ -21,7 +21,7 @@ const checkPotluckId = async (req, res, next) => {
 async function validateAddGuestPayload(req, res, next) {
   const { user_id, attending } = req.body
   if (!user_id || !attending || typeof attending !== "boolean") {
-    next({
+    return next({
       status: 400,
       message: "Please provide a user_id and an attending boolean"
     })
@@ -31,6 +31,12 @@ async function validateAddGuestPayload(req, res, next) {
     return next({
       status: 404,
       message: `User with id of ${user_id} does not exist`
+    })
+  }
+  const potluck = await Potlucks.getById(req.params.potluck_id)
+  if (potluck.user_id === user_id) {
+    return next({
+      message: "Cannot add a potluck organizer as their own guest"
     })
   }
   req.body.guest = {

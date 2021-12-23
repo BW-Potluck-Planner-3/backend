@@ -175,7 +175,7 @@ describe("[GET] - /api/potlucks/:potluck_id/guests", () => {
       const res = await request(server)
         .get("/api/potlucks/1/guests")
         .set("Authorization", loginRes.body.token)
-      const expectedLength = 4
+      const expectedLength = 3
       const actual = res.body
       expect(actual).toHaveLength(expectedLength)
       actual.forEach(guest => {
@@ -326,24 +326,24 @@ describe("[GET] - /api/potlucks/:potluck_id/foods", () => {
 
 describe("[POST] - /api/potlucks/:potluck_id/guests", () => {
   describe("requesting with a valid token", () => {
-    let loginRes
+    let res
     beforeEach(async () => {
-      loginRes = await request(server)
+      const loginRes = await request(server)
         .post("/api/auth/login")
         .send({
           username: "SaM",
           password: "1234"
         })
+      res = await request(server)
+        .post("/api/potlucks/3/guests")
+        .set("Authorization", loginRes.body.token)
+        .send({
+          user_id: 3,
+          attending: true
+        })
     })
     describe("to add a valid guest to a potluck", () => {
-      it("resonds with the newly created guest object", async () => {
-        const res = await request(server)
-          .post("/api/potlucks/3/guests")
-          .send({
-            user_id: 5,
-            attending: true
-          })
-          .set("Authorization", loginRes.body.token)
+      it("resonds with an array containing all of the guests, who have been invited to this potluck", async () => {
         const actual = res.body
         expect(actual).toHaveLength(1)
         actual.forEach(guest => {
@@ -351,6 +351,35 @@ describe("[POST] - /api/potlucks/:potluck_id/guests", () => {
           expect(guest).toHaveProperty("username")
           expect(guest).toHaveProperty("attending")
         })
+      })
+      it("responds with the status code 201", async () => {
+        expect(res.status).toBe(201)
+      })
+    })
+
+    describe("to add a guest to a nonexistent potluck", () => {
+      let res
+      beforeEach(async () => {
+        const loginRes = await request(server)
+          .post("/api/auth/login")
+          .send({
+            username: "SaM",
+            password: "1234"
+          })
+        res = await request(server)
+          .post("/api/potlucks/8/guests")
+          .set("Authorization", loginRes.body.token)
+          .send({
+            user_id: 3,
+            attending: false
+          })
+      })
+      it("responds with 'potluck with id _#_ not found'", () => {
+        const expected = /potluck with id 8 not found/i
+        expect(res.body.message).toMatch(expected)
+      })
+      it("responds with the status code 404", () => {
+        expect(res.status).toBe(404)
       })
     })
   })
