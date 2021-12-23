@@ -3,7 +3,7 @@ const server = require('../server')
 
 function getReqTokenTests(endpointPath) {
   return (
-    describe("Bad Tests:", () => {
+    describe("Bad/Missing Token Tests:", () => {
       describe("requesting with no token", () => {
         let res
         beforeAll(async () => {
@@ -40,7 +40,7 @@ function getReqTokenTests(endpointPath) {
 
 function postReqTokenTests(endpointPath, sentObject) {
   return (
-    describe("Bad Tests:", () => {
+    describe("Bad/Missing Token Tests:", () => {
       describe("requesting with no token", () => {
         let res
         beforeAll(async () => {

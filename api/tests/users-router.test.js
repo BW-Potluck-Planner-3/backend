@@ -1,6 +1,10 @@
 const request = require('supertest')
 const server = require('../server')
 const db = require('../data/db-config')
+const {
+  getReqTokenTests,
+  postReqTokenTests,
+} = require("./test-helpers")
 
 beforeAll(async () => {
   await db.migrate.rollback()
@@ -13,42 +17,6 @@ afterAll(async () => {
   await db.destroy()
 })
 
-function getReqTokenTests(endpointPath) {
-  return (
-    describe("Token Tests:", () => {
-      describe("requesting with no token", () => {
-        let res
-        beforeAll(async () => {
-          res = await request(server)
-            .get(`${endpointPath}`)
-        })
-        it("responds with the message 'token required'", () => {
-          const expected = /token required/i
-          expect(res.body.message).toMatch(expected)
-        })
-        it("responds with the status code 401", () => {
-          expect(res.status).toBe(401)
-        })
-      })
-
-      describe("requesting with an invalid token", () => {
-        let res
-        beforeAll(async () => {
-          res = await request(server)
-            .get(`${endpointPath}`)
-            .set("Authorization", "junk")
-        })
-        it("responds with the message 'invalid token'", () => {
-          const expected = /invalid token/i
-          expect(res.body.message).toMatch(expected)
-        })
-        it("responds with the status code 401", () => {
-          expect(res.status).toBe(401)
-        })
-      })
-    })
-  )
-}
 
 /* ========== [GET] - /api/users ========== */
 
@@ -78,6 +46,91 @@ describe("[GET] - /api/users", () => {
       expect(res.status).toBe(200)
     })
   })
-  // Token Tests
+
   getReqTokenTests("/api/users")
+
+})
+
+/* ========== [POST] - /api/users ========== */
+
+describe("[POST] - /api/users", () => {
+  describe("requesting with a valid token", () => {
+    let res
+    beforeAll(async () => {
+      const loginRes = await request(server)
+        .post("/api/auth/login")
+        .send({
+          username: "piPPIN",
+          password: "1234"
+        })
+      res = await request(server)
+        .post("/api/users")
+        .set("Authorization", loginRes.body.token)
+        .send({
+          username: "sam"
+        })
+    })
+    describe("to find an existing user by their username", () => {
+      it("resonds with an object containing the user's user_id", async () => {
+        const actual = res.body
+        expect(actual).toHaveProperty("user_id")
+      })
+      it("responds with the status code 200", async () => {
+        expect(res.status).toBe(200)
+      })
+    })
+
+    describe("to find a user that doesn not exist by their username", () => {
+      let res
+      beforeAll(async () => {
+        const loginRes = await request(server)
+          .post("/api/auth/login")
+          .send({
+            username: "SaM",
+            password: "1234"
+          })
+        res = await request(server)
+          .post("/api/users")
+          .set("Authorization", loginRes.body.token)
+          .send({
+            username: "jimmy10000"
+          })
+      })
+      it("responds with '_username_ does not exist'", () => {
+        const expected = /jimmy10000 does not exist/i
+        expect(res.body.message).toMatch(expected)
+      })
+      it("responds with the status code 404", () => {
+        expect(res.status).toBe(404)
+      })
+    })
+
+    describe("to find a user by their username without providing a username", () => {
+      let res
+      beforeAll(async () => {
+        const loginRes = await request(server)
+          .post("/api/auth/login")
+          .send({
+            username: "SaM",
+            password: "1234"
+          })
+        res = await request(server)
+          .post("/api/users")
+          .set("Authorization", loginRes.body.token)
+          .send({
+            bad: "apple"
+          })
+      })
+      it("responds with 'Username must be provided'", () => {
+        const expected = /username must be provided/i
+        expect(res.body.message).toMatch(expected)
+      })
+      it("responds with the status code 400", () => {
+        expect(res.status).toBe(400)
+      })
+    })
+
+    postReqTokenTests("/api/potlucks/3/guests", { username: "jimmy10000" })
+
+  })
 })
