@@ -4,6 +4,7 @@ const {
   checkPotluckId,
   validatePotluckPayload,
   validateAddGuestPayload,
+  validateUpdateGuestPayload,
 } = require('./potluck-middleware');
 
 // [GET] /api/potlucks
@@ -103,5 +104,48 @@ router.put(
     }
   }
 );
+
+// [PUT] /api/potlucks/:potluck_id/guests/:user_id
+router.put(
+  '/:potluck_id/guests/:user_id',
+  checkPotluckId,
+  validateUpdateGuestPayload,
+  async (req, res, next) => {
+    try {
+      const guest = await Potlucks.updateGuest(
+        req.params.potluck_id,
+        req.params.user_id,
+        req.body
+      );
+      res.status(200).json(guest);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// [PUT] /api/potlucks/:potluck_id/foods
+router.put('/:potluck_id/foods', checkPotluckId, async (req, res, next) => {
+  // request body must include food_name and user_id
+  // if user_id and food_name are not in the request body, return 400 error with message 'food_name and user_id are required'
+  // if food_name already exists for this potluck, return 400 error with message 'food_name already exists for this potluck'
+  // if user_id does not exist, return 400 error with message 'user_id does not exist'
+  // if food_name and user_id are valid, add food_name to foods array for this potluck
+
+  const { food_name, user_id } = req.body;
+  if (!food_name || !user_id) {
+    next({
+      status: 400,
+      message: 'food_name and user_id are required',
+    });
+  } else {
+    try {
+      const foods = await Potlucks.addFood(req.params.potluck_id, req.body);
+      res.status(201).json(foods);
+    } catch (err) {
+      next(err);
+    }
+  }
+});
 
 module.exports = router;

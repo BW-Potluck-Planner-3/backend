@@ -73,6 +73,25 @@ const updateGuest = (potluck_id, user_id, changes) => {
 
 const remove = (potluck_id) => db('potlucks').where({ potluck_id }).del();
 
+const removeGuest = (potluck_id, user_id) => {
+  return db('guests')
+    .where({ potluck_id, user_id })
+    .del()
+    .then(() => getAll());
+};
+
+const removeFood = (potluck_id, food_name) => {
+  return db('foods')
+    .where({ food_name })
+    .del()
+    .then(() => {
+      return db('food_potluck')
+        .where({ potluck_id, food_name })
+        .del()
+        .then(() => getByIdFoods(potluck_id));
+    });
+};
+
 module.exports = {
   getAll,
   getById,
@@ -84,4 +103,6 @@ module.exports = {
   update,
   updateGuest,
   remove,
+  removeGuest,
+  removeFood,
 };
