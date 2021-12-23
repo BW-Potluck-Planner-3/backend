@@ -99,6 +99,23 @@ async function validateAddGuestPayload(req, res, next) {
   return next();
 }
 
+const validateRemoveGuestPayload = async (req, res, next) => {
+  try {
+    const guestExists = await Potlucks.getIdGuests(req.params.potluck_id);
+    const { user_id } = req.body;
+    if (!guestExists.some((guest) => guest.user_id === user_id)) {
+      next({
+        status: 400,
+        message: 'This user is not a guest of this potluck',
+      });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 const validateUpdateGuestPayload = async (req, res, next) => {
   const { attending } = req.body;
   console.log(attending);
@@ -122,4 +139,5 @@ module.exports = {
   validateFoodExists,
   validateAddGuestPayload,
   validateUpdateGuestPayload,
+  validateRemoveGuestPayload,
 };

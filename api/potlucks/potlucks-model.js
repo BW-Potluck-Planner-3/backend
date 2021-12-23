@@ -77,7 +77,7 @@ const removeGuest = (potluck_id, user_id) => {
   return db('guests')
     .where({ potluck_id, user_id })
     .del()
-    .then(() => getAll());
+    .then(() => getIdGuests(potluck_id));
 };
 
 const removeFood = (potluck_id, food_name) => {

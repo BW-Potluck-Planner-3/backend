@@ -7,6 +7,7 @@ const {
   validateUpdateGuestPayload,
   validateFoodPayload,
   validateFoodExists,
+  validateRemoveGuestPayload,
 } = require('./potluck-middleware');
 
 // [GET] /api/potlucks
@@ -124,6 +125,24 @@ router.put(
         req.params.potluck_id,
         req.params.user_id,
         req.body
+      );
+      res.status(200).json(guest);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// [DELETE] /api/potlucks/:potluck_id/guests
+router.delete(
+  '/:potluck_id/guests',
+  checkPotluckId,
+  validateRemoveGuestPayload,
+  async (req, res, next) => {
+    try {
+      const guest = await Potlucks.removeGuest(
+        req.params.potluck_id,
+        req.body.user_id
       );
       res.status(200).json(guest);
     } catch (err) {
