@@ -64,6 +64,13 @@ const update = (potluck_id, changes) => {
     .then(() => getById(potluck_id));
 };
 
+const updateGuest = (potluck_id, user_id, changes) => {
+  return db('guests')
+    .where({ potluck_id, user_id })
+    .update(changes)
+    .then(() => getIdGuests(potluck_id));
+};
+
 const remove = (potluck_id) => db('potlucks').where({ potluck_id }).del();
 
 module.exports = {
@@ -75,5 +82,6 @@ module.exports = {
   addGuest,
   addFood,
   update,
+  updateGuest,
   remove,
 };
