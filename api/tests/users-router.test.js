@@ -176,3 +176,58 @@ describe("[GET] - /api/users/:user_id", () => {
   runTokenTests("/api/users/1")
 
 })
+
+// ====================
+
+describe("[GET] - /api/users/:user_id/potlucks", () => {
+  describe("requesting with a valid token", () => {
+    let res
+    let errorRes
+    beforeAll(async () => {
+      const loginRes = await request(server)
+        .post("/api/auth/login")
+        .send({
+          username: "meRRY",
+          password: "1234"
+        })
+      res = await request(server)
+        .get("/api/users/2/potlucks")
+        .set("Authorization", loginRes.body.token)
+      errorRes = await request(server)
+        .get("/api/users/100/potlucks")
+        .set("Authorization", loginRes.body.token)
+
+    })
+    it("responds with an array of potlucks organized by the selected user. If user has no potlucks, it responds with the message 'No potlucks found for User_ID _#_'", () => {
+      const actual = res.body
+      if (actual.length > 0 && actual[0].potluck_name) {
+        actual.forEach(potluck => {
+          expect(potluck).toHaveProperty("date")
+          expect(potluck).toHaveProperty("location")
+          expect(potluck).toHaveProperty("time")
+          expect(potluck).toHaveProperty("potluck_name")
+          expect(potluck).toHaveProperty("potluck_id")
+          expect(potluck).toHaveProperty("user_id")
+        })
+      } else {
+        expect(actual).toMatch(/no potlucks found for user_id 2/i)
+      }
+    })
+    it("responds with the status code 200", () => {
+      expect(res.status).toBe(200)
+    })
+
+    describe("to get a nonexistent user", () => {
+      it("responds with 'User with id _#_ not found'", () => {
+        const expected = /user with id 100 not found/i
+        expect(errorRes.body.message).toMatch(expected)
+      })
+      it("responds with the status code 404", () => {
+        expect(errorRes.status).toBe(404)
+      })
+    })
+  })
+
+  runTokenTests("/api/users/1")
+
+})
