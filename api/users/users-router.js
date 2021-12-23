@@ -27,7 +27,7 @@ router.get('/:user_id', async (req, res) => {
     const { user_id, username } = await Users.getById(req.params.user_id);
     res.json({ user_id, username });
   } catch (err) {
-    res.json({ message: `User with id ${req.params.user_id} not found` });
+    res.status(404).json({ message: `User with id ${req.params.user_id} not found` });
   }
 });
 

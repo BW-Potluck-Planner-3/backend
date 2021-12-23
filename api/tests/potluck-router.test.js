@@ -2,8 +2,7 @@ const request = require('supertest')
 const server = require('../server')
 const db = require('../data/db-config')
 const {
-  getReqTokenTests,
-  postReqTokenTests,
+  runTokenTests
 } = require("./test-helpers")
 
 beforeAll(async () => {
@@ -49,7 +48,7 @@ describe("[GET] - /api/potlucks", () => {
       expect(res.status).toBe(200)
     })
 
-    getReqTokenTests("/api/potlucks")
+    runTokenTests("/api/potlucks")
 
   })
 
@@ -102,7 +101,7 @@ describe("[GET] - /api/potlucks", () => {
       })
     })
 
-    getReqTokenTests("/api/potlucks/2")
+    runTokenTests("/api/potlucks/2")
 
     /* ========== [GET] - /api/potlucks/:potluck_id/guests ========== */
 
@@ -154,7 +153,7 @@ describe("[GET] - /api/potlucks", () => {
         })
       })
 
-      getReqTokenTests("/api/potlucks/1/guests")
+      runTokenTests("/api/potlucks/1/guests")
 
       /* ========== [GET] - /api/potlucks/:potluck_id/foods ========== */
 
@@ -206,7 +205,7 @@ describe("[GET] - /api/potlucks", () => {
           })
         })
 
-        getReqTokenTests("/api/potlucks/1/foods")
+        runTokenTests("/api/potlucks/1/foods")
 
       })
 
@@ -323,7 +322,7 @@ describe("[GET] - /api/potlucks", () => {
           })
         })
 
-        postReqTokenTests("/api/potlucks/3/guests", { user_id: 5, attending: true })
+        runTokenTests("/api/potlucks/3/guests", { user_id: 5, attending: true })
 
       })
     })

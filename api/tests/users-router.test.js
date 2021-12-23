@@ -2,8 +2,7 @@ const request = require('supertest')
 const server = require('../server')
 const db = require('../data/db-config')
 const {
-  getReqTokenTests,
-  postReqTokenTests,
+  runTokenTests
 } = require("./test-helpers")
 
 beforeAll(async () => {
@@ -47,7 +46,7 @@ describe("[GET] - /api/users", () => {
     })
   })
 
-  getReqTokenTests("/api/users")
+  runTokenTests("/api/users")
 
 })
 
@@ -131,14 +130,15 @@ describe("[POST] - /api/users", () => {
     })
   })
 
-  postReqTokenTests("/api/potlucks/3/guests", { username: "jimmy10000" })
+  runTokenTests("/api/potlucks/3/guests", { username: "jimmy10000" })
 
 })
 
 describe("[GET] - /api/users/:user_id", () => {
   describe("requesting with a valid token", () => {
     let res
-    beforeEach(async () => {
+    let errorRes
+    beforeAll(async () => {
       const loginRes = await request(server)
         .post("/api/auth/login")
         .send({
@@ -148,6 +148,10 @@ describe("[GET] - /api/users/:user_id", () => {
       res = await request(server)
         .get("/api/users/1")
         .set("Authorization", loginRes.body.token)
+      errorRes = await request(server)
+        .get("/api/users/100")
+        .set("Authorization", loginRes.body.token)
+
     })
     it("responds with an object containing a usersname and user_id", () => {
       const actual = res.body
@@ -157,8 +161,18 @@ describe("[GET] - /api/users/:user_id", () => {
     it("responds with the status code 200", () => {
       expect(res.status).toBe(200)
     })
+
+    describe("to get a nonexistent user", () => {
+      it("responds with 'User with id _#_ not found'", () => {
+        const expected = /user with id 100 not found/i
+        expect(errorRes.body.message).toMatch(expected)
+      })
+      it("responds with the status code 404", () => {
+        expect(errorRes.status).toBe(404)
+      })
+    })
   })
 
-  getReqTokenTests("/api/users/1")
+  runTokenTests("/api/users/1")
 
 })
