@@ -241,7 +241,7 @@ _Response_
 
 ### [POST] /api/potlucks/:potluck_id/foods
 - Adds a food to a potluck
-  - food_name required
+  - _food_name required (must be unique)_
 
 _Send_
 ```json
@@ -259,3 +259,88 @@ _Response_
   "username": "user"
  }
 ]
+```
+
+### [PUT] /api/potlucks/:potluck_id
+
+- Update Potluck by ID
+  - _potluck_name required_
+  - _date required_
+  - _time required_
+  - _location required_
+
+ _Send_
+ ```json
+ {
+   "potluck_name": "updated potluck",
+   "date": "2021/12/21",
+   "time": "12:00",
+   "location": "nowhere"
+ }
+ ```
+
+ _Response_
+ ```json
+ {
+   "potluck_id": 1,
+   "potluck_name": "updated potluck",
+   "time": "12:00",
+   "location": "nowhere",
+   "user_id": 1
+ }
+ ```
+
+ ### [PUT] /api/potlucks/:potluck_id/guests/:user_id
+
+- Update Guest attendance
+  - _attending status required (boolean)_
+
+ _Send_
+ ```json
+ {
+   "attending": "false",
+ }
+ ```
+
+ _Response_
+ ```json
+ {
+   "user_id": 1,
+   "username": "user",
+   "attending": "false"
+ }
+ ```
+
+ ### [DELETE] /api/potlucks/:potluck_id
+
+ - Delete Potluck by ID
+
+### [DELETE] /api/potlucks/:potluck_id/guests
+
+- Delete Guest By Potluck ID
+  - _user_id required_
+
+_Send_
+
+```json
+{
+  "user_id": 1
+}
+```
+
+- Responds with all guests from specified potluck ID
+
+### [DELETE] /api/potlucks/:potluck_id/foods
+
+- Delete food_name from Potluck ID
+  - _food_name required_
+
+
+_Send_
+```json
+{
+  "food_name": "food item"
+}
+```
+
+- Responds back with all food item from potluck ID
