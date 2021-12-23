@@ -65,8 +65,25 @@ async function validateAddGuestPayload(req, res, next) {
   return next();
 }
 
+const validateUpdateGuestPayload = async (req, res, next) => {
+  const { attending } = req.body;
+  console.log(attending);
+  if (attending === true || attending === false) {
+    req.body = {
+      attending,
+    };
+    next();
+  } else {
+    next({
+      status: 400,
+      message: 'Missing or invalid attending status',
+    });
+  }
+};
+
 module.exports = {
   checkPotluckId,
   validatePotluckPayload,
   validateAddGuestPayload,
+  validateUpdateGuestPayload,
 };
