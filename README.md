@@ -5,7 +5,7 @@
 
 ## REGISTER / LOGIN
 
-### [POST] /api/auth/register
+### `[POST] /api/auth/register`
 
 - User register
   - _username required (must be unique)_
@@ -25,7 +25,7 @@ _Response_
 }
 ```
 
-### [POST] /api/auth/login
+### `[POST] /api/auth/login`
 
 - User login
   - _username required_
@@ -49,7 +49,7 @@ _Response_
 ```
 ## USERS _(RESTRICTED)_
 
-### [GET] /api/users
+### `[GET] /api/users`
 
 - Return array of users
   - _requires token in header_
@@ -67,7 +67,7 @@ _Response_
   }
 ]
 ```
-### [GET] /api/users/:user_id
+### `[GET] /api/users/:user_id`
 
 - Return user with specified user_id
   - _requires token in header_
@@ -80,7 +80,7 @@ _Response_
 }
 ```
 
-### [POST] /api/users
+### `[POST] /api/users`
 - Returns a user's user_id inside of an object
   - Requires an existing user's _username_
 
@@ -98,7 +98,7 @@ _Response_
 }
 ```
 
-### [POST] /api/users/:user_id/potlucks
+### `[POST] /api/users/:user_id/potlucks`
 - Creates new potluck object by individual users
   - _potluck_name required_
   - _date required_
@@ -134,7 +134,7 @@ _Response_
 
 ## POTLUCKS _(RESTRICTED)_
 
-### [GET] /api/potlucks
+### `[GET] /api/potlucks`
 - Returns array of potlucks in database
 
 _Response_
@@ -150,7 +150,7 @@ _Response_
   }
 ]
 ```
-### [GET] /api/potlucks/:potluck_id
+### `[GET] /api/potlucks/:potluck_id`
 - Returns array of potlucks by potluck ID
 
 ```json
@@ -179,7 +179,7 @@ _Response_
   }
 ]
 ```
-### [GET] /api/potlucks/:potluck_id/guests
+### `[GET] /api/potlucks/:potluck_id/guests`
 - Returns array of guests by potluck ID
 
 ```json
@@ -196,7 +196,7 @@ _Response_
  }
 ]
 ```
-### [GET] /api/potlucks/:potluck_id/foods
+### `[GET] /api/potlucks/:potluck_id/foods`
 
 - Returns an array of food by potluck ID
 
@@ -210,11 +210,11 @@ _Response_
 ]
 ```
 
-### [POST] /api/potlucks/:potluck_id/guests
+### `[POST] /api/potlucks/:potluck_id/guests`
 
 - Add an array of guests by potluck ID
   - _user_id required_
-  - _attending required_
+  - _attending status (boolean) required_
 
 _Send_
 ```json
@@ -239,7 +239,7 @@ _Response_
 }
 ```
 
-### [POST] /api/potlucks/:potluck_id/foods
+### `[POST] /api/potlucks/:potluck_id/foods`
 - Adds a food to a potluck
   - _food_name required (must be unique)_
 
@@ -261,9 +261,9 @@ _Response_
 ]
 ```
 
-### [PUT] /api/potlucks/:potluck_id
+### `[PUT] /api/potlucks/:potluck_id`
 
-- Update Potluck by ID
+- Update Potluck by potluck_id
   - _potluck_name required_
   - _date required_
   - _time required_
@@ -290,7 +290,7 @@ _Response_
  }
  ```
 
- ### [PUT] /api/potlucks/:potluck_id/guests/:user_id
+ ### `[PUT] /api/potlucks/:potluck_id/guests/:user_id`
 
 - Update Guest attendance
   - _attending status required (boolean)_
@@ -311,7 +311,7 @@ _Response_
  }
  ```
 
- ### [DELETE] /api/potlucks/:potluck_id
+ ### `[DELETE] /api/potlucks/:potluck_id`
 
  - Delete Potluck by ID
 
@@ -330,7 +330,7 @@ _Send_
 
 - Responds with all guests from specified potluck ID
 
-### [DELETE] /api/potlucks/:potluck_id/foods
+### `[DELETE] /api/potlucks/:potluck_id/foods`
 
 - Delete food_name from Potluck ID
   - _food_name required_
