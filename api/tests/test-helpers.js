@@ -1,19 +1,31 @@
 const request = require('supertest')
 const server = require('../server')
 
-function runTokenTests(endpointPath, sentObj) {
+function runTokenTests(endpointPath, sentObj, update, remove) {
   return (
     describe("Bad/Missing Token Tests:", () => {
       describe("requesting with no token", () => {
         let res
         beforeAll(async () => {
-          if (sentObj) {
+          if (remove) {
+            res = await request(server)
+              .delete(`${endpointPath}`)
+              .send(sentObj)
+            return
+          } else if (update) {
+            res = await request(server)
+              .put(`${endpointPath}`)
+              .send(sentObj)
+            return
+          } else if (sentObj) {
             res = await request(server)
               .post(`${endpointPath}`)
               .send(sentObj)
+            return
           } else {
             res = await request(server)
               .get(`${endpointPath}`)
+            return
           }
         })
         it("responds with the message 'token required'", () => {
